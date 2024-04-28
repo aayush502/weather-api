@@ -12,11 +12,10 @@ class WeatherForecastService
     begin
       # fetch the hourly periods weather data for next seven days
       forecast_hourly_url = gridpoint['data']['properties']['forecastHourly']
-      response = get(forecast_hourly_url)
-
-      raise StandardError, "Failed to fetch gridpoint: #{response.code}" unless response.success?
-
-      { data: JSON.parse(response.body), status: response.code }
+      Rails.cache.fetch(forecast_cache_key(forecast_hourly_url), expires_in: 1.hour) do
+        response = get(forecast_hourly_url)
+        { data: JSON.parse(response.body), status: response.code }
+      end
     rescue JSON::ParserError => e
       { error: "Error parsing JSON response: #{e.message}", status: 500 }
     rescue StandardError => e
@@ -29,9 +28,19 @@ class WeatherForecastService
     latitude = params[:latitude]
     longitude = params[:longitude]
 
-    response = get("/points/#{latitude},#{longitude}")
-    { 'data' => JSON.parse(response.body), 'status' => response.code }
+    Rails.cache.fetch(gridpoint_cache_key(latitude, longitude), expires_in: 1.hour) do
+      response = get("/points/#{latitude},#{longitude}")
+      { 'data' => JSON.parse(response.body), 'status' => response.code }
+    end
   rescue SocketError => e
     { 'error' => "Socket error occurred: #{e.message}", 'status' => 500 }
+  end
+
+  def self.forecast_cache_key(url)
+    "forecast:#{url}"
+  end
+
+  def self.gridpoint_cache_key(latitude, longitude)
+    "gridpoint:#{latitude}_#{longitude}"
   end
 end
