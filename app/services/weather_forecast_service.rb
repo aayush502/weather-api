@@ -11,7 +11,7 @@ class WeatherForecastService
     return gridpoint unless gridpoint['status'] == 200
 
     begin
-      # fetch the hourly periods weather data for next seven days
+      # fetch the hourly periods weather url
       forecast_hourly_url = gridpoint['data']['properties']['forecastHourly']
 
       # Cache the forecast response with a 1-hour expiry time

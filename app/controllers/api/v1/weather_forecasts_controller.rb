@@ -6,6 +6,7 @@ module Api
     # get the weather forecasts data
     class WeatherForecastsController < ApplicationController
       def index
+        # call forecast service to fetch weather api
         hourly_forecast = WeatherForecastService.hourly_forecast(weather_forecast_params)
 
         if hourly_forecast.is_a?(Hash) && hourly_forecast.key?(:error)
@@ -18,7 +19,7 @@ module Api
       private
 
       def weather_forecast_params
-        params.permit(:latitude, :longitude)
+        params.require(:weather_forecast).permit(:latitude, :longitude)
       end
     end
   end
