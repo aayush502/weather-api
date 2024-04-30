@@ -19,7 +19,7 @@ module Api
       private
 
       def weather_forecast_params
-        params.require(:weather_forecast).permit(:latitude, :longitude)
+        params.permit(:latitude, :longitude)
       end
     end
   end

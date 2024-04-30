@@ -12,5 +12,5 @@ This is the weather forecast api application in rails. This api fetches the hour
 - rails s
 
 ## Access Data
-- Send HTTP GET request to rails server with latitude and logitude in request body
-- Example: http://localhost:3000/api/v1/weather_forecasts
+- Send HTTP GET request to rails server with latitude and logitude in request body or query params
+- Example Url: http://localhost:3000/api/v1/weather_forecasts, http://localhost:3000/api/v1/weather_forecasts?latitude=39.7456&longitude=-97.0892
